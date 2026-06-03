@@ -19,10 +19,11 @@ Notes:
 
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass
 from enum import Enum
 import math
-from typing import Iterable, List, Optional, Tuple
+from typing import Callable, Iterable, List, Optional, Tuple
 import pandas as pd
 import numpy as np
 import json
@@ -711,9 +712,6 @@ def ffb_adult_race_decrease_eps():
 
 
 
-    with open("experimental-setups/params_ffb_example.json", "r") as fp:
-        params = json.load(fp)[0]
-
 def ffb_adult_race_decrease_interval_length():
     params_file = "experimental-setups/ffb-adult-race-decrease-interval-length.json"
     with open(params_file, "r") as fp:
@@ -733,62 +731,86 @@ def ffb_adult_race_decrease_interval_length():
         df_out.to_csv(params["data_results"])
 
 
-def stochastic_decrease_interval_length():
-    params_file = "experimental-setups/stochastic-decrease-interval-length.json"
-    with open(params_file, "r") as fp:
-        params_vec = json.load(fp)
-
-    for i in tqdm(range(len(params_vec))):
-        params = params_vec[i]
-        monitor_one_stream(params)
-
-    
-def stochastic_decrease_interval_length_rand():
-    params_file = "experimental-setups/stochastic-decrease-interval-length_rand.json"
-    with open(params_file, "r") as fp:
-        params_vec = json.load(fp)
-
-    for i in tqdm(range(len(params_vec))):
-        params = params_vec[i]
-        monitor_one_stream(params)
 
 
+Experiment = Tuple[str, Callable[[], None]]
 
-def stochastic_decrease_interval_length30k():
-    params_file = "experimental-setups/stochastic-decrease-interval-length30k.json"
-    with open(params_file, "r") as fp:
-        params_vec = json.load(fp)
+EXPERIMENTS: dict[str, Experiment] = {
+    "powertrace_decrease_eps": (
+        "Figure 1: power trace, decreasing epsilon",
+        powerdata_decrease_eps,
+    ),
+    "powertrace_decrease_interval_length": (
+        "Figure 1: power trace, decreasing target interval length",
+        powerdata_decrease_interval_length,
+    ),
+    "adult_decrease_eps": (
+        "Figure 2: Adult race fairness, decreasing epsilon",
+        ffb_adult_race_decrease_eps,
+    ),
+    "mnist_increase_noise": (
+        "Figure 3: MNIST drift traces, increasing noise",
+        mnist_increase_noise,
+    ),
+    "adult_decrease_interval_length": (
+        "Figure 4: Adult race fairness, decreasing interval length",
+        ffb_adult_race_decrease_interval_length,
+    ),
+}
 
-    for i in tqdm(range(len(params_vec))):
-        params = params_vec[i]
-        monitor_one_stream(params)
 
-    
-def stochastic_decrease_interval_length30k_rand():
-    params_file = "experimental-setups/stochastic-decrease-interval-length30k_rand.json"
-    with open(params_file, "r") as fp:
-        params_vec = json.load(fp)
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Run monitor experiments and write CSVs to experimental-results/."
+    )
+    parser.add_argument(
+        "experiments",
+        nargs="*",
+        default=None,
+        choices=["run_all", *EXPERIMENTS.keys()],
+        help=(
+            "Experiment(s) to run. Use run_all, or one or more explicit "
+            "experiment names. Defaults to run_all."
+        ),
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="List available experiments and exit.",
+    )
+    return parser.parse_args()
 
-    for i in tqdm(range(len(params_vec))):
-        params = params_vec[i]
-        monitor_one_stream(params)
+
+def experiment_names_to_run(selected: list[str]) -> list[str]:
+    if "run_all" in selected:
+        if len(selected) > 1:
+            raise ValueError("run_all cannot be combined with explicit experiment names.")
+        return list(EXPERIMENTS.keys())
+    return selected
 
 
+def print_experiments() -> None:
+    print("Available experiments:")
+    for name, (description, _) in EXPERIMENTS.items():
+        print(f"  {name}: {description}")
 
 
+def main() -> None:
+    args = parse_args()
+    if args.list:
+        print_experiments()
+        return
 
-def main():
-    # powerdata_decrease_eps()
-    # powerdata_decrease_interval_length()
-    # mnist_increase_noise()
-    # ffb_adult_race_decrease_eps()
-    # ffb_adult_race_decrease_interval_length()
-    stochastic_decrease_interval_length()
-    stochastic_decrease_interval_length_rand()
+    try:
+        names = experiment_names_to_run(args.experiments or ["run_all"])
+    except ValueError as exc:
+        raise SystemExit(f"error: {exc}") from None
 
-    # stochastic_decrease_interval_length30k()
-    # stochastic_decrease_interval_length30k_rand()
-    
+    for name in names:
+        description, run = EXPERIMENTS[name]
+        print(f"Running {name}: {description}")
+        run()
+        print(f"Finished {name}")
 
 
 

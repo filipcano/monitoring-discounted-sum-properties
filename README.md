@@ -82,15 +82,6 @@ source venv/bin/activate
 python -m pip install numpy pandas matplotlib tqdm scikit-learn scipy statsmodels tabulate torch torchvision
 ```
 
-In restricted environments, Matplotlib may not be able to write to its default
-cache directory. Set a cache directory inside the repository before plotting:
-
-```bash
-mkdir -p .mplconfig .cache experimental-results/images experimental-results/MLmodels experimental-setups ffb_traces mnist-traces
-export MPLCONFIGDIR="$PWD/.mplconfig"
-export XDG_CACHE_HOME="$PWD/.cache"
-```
-
 ### 2. Obtain the result CSVs in `experimental-results/`
 
 The figure CSVs are monitor outputs produced from the source traces and setup
@@ -132,22 +123,39 @@ when needed:
 python generate_experimental_setups.py
 ```
 
-Then run the monitor experiments for the paper figures. A bare `python main.py`
-currently runs the stochastic experiments, so call the Figure 1-4 functions
-explicitly:
+Then run the monitor experiments for the paper figures. By default,
+`main.py` runs all Figure 1-4 experiments:
+
+```bash
+python main.py
+```
+
+This is equivalent to:
+
+```bash
+python main.py run_all
+```
+
+To run only selected experiments, pass one or more experiment names:
 
 ```bash
 # Figure 1 data
-python -c "import main; main.powerdata_decrease_eps(); main.powerdata_decrease_interval_length()"
+python main.py powertrace_decrease_eps powertrace_decrease_interval_length
 
 # Figure 2 data
-python -c "import main; main.ffb_adult_race_decrease_eps()"
+python main.py adult_decrease_eps
 
 # Figure 3 data
-python -c "import main; main.mnist_increase_noise()"
+python main.py mnist_increase_noise
 
 # Figure 4 data
-python -c "import main; main.ffb_adult_race_decrease_interval_length()"
+python main.py adult_decrease_interval_length
+```
+
+List the available experiment names with:
+
+```bash
+python main.py --list
 ```
 
 These commands write:
@@ -186,8 +194,6 @@ The generated image files used in Figures 1-4 are:
 | Figure 3 | `mnist_increase_noise.pdf`, `mnst_active_monitors_execution.pdf`, `mnst_accuracy_values_execution.pdf` |
 | Figure 4 | `adult_decrease_interval_lenght.pdf`, `adult_decrease_interval_boxplot.pdf` |
 
-The misspellings in `mnst_*` and `adult_decrease_interval_lenght.pdf` are the
-current filenames written by `plot_results.py`.
 
 ## Repository Structure
 
@@ -234,12 +240,3 @@ monitor.
 
 `generate_stochastic_traces.py`
 : Generates synthetic stochastic traces. These are not needed for Figures 1-4.
-
-## Notes
-
-- The plotting script's `main()` currently produces a stochastic table, not
-  Figures 1-4. Use the explicit plotting commands above for the paper figures.
-- The monitor script's `main()` currently runs stochastic experiments, not all
-  Figure 1-4 experiments. Use the explicit `python -c "import main; ..."`
-  commands above.
-- Some scripts overwrite existing CSVs or PDFs with the same names.
