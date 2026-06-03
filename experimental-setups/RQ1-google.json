@@ -1,0 +1,62 @@
+[
+  {
+    "data_source": "google-trace-data/cella_pdu6.csv",
+    "data_column_name": "measured_power_util",
+    "use_averages": true,
+    "data_results": "experimental-results/powertrace_L=0.6774468669328574_U=0.7027142184877745.csv",
+    "infR": 0.0,
+    "supR": 1.0,
+    "r": 0.9,
+    "s": 0.9,
+    "eps": 0.0012633675777458553,
+    "T": 120.0,
+    "L": 0.6774468669328574,
+    "U": 0.7027142184877745,
+    "save_csv": false
+  },
+  {
+    "data_source": "google-trace-data/cella_pdu6.csv",
+    "data_column_name": "measured_power_util",
+    "use_averages": true,
+    "data_results": "experimental-results/powertrace_L=0.7279815700426916_U=0.7532489215976087.csv",
+    "infR": 0.0,
+    "supR": 1.0,
+    "r": 0.9,
+    "s": 0.9,
+    "eps": 0.0012633675777458553,
+    "T": 120.0,
+    "L": 0.7279815700426916,
+    "U": 0.7532489215976087,
+    "save_csv": false
+  },
+  {
+    "data_source": "google-trace-data/cella_pdu6.csv",
+    "data_column_name": "measured_power_util",
+    "use_averages": true,
+    "data_results": "experimental-results/powertrace_L=0.7027142184877745_U=0.7279815700426916.csv",
+    "infR": 0.0,
+    "supR": 1.0,
+    "r": 0.9,
+    "s": 0.9,
+    "eps": 0.0012633675777458553,
+    "T": 120.0,
+    "L": 0.7027142184877745,
+    "U": 0.7279815700426916,
+    "save_csv": false
+  },
+  {
+    "data_source": "google-trace-data/cella_pdu6.csv",
+    "data_column_name": "measured_power_util",
+    "use_averages": true,
+    "data_results": "experimental-results/powertrace_L=0.7128211591097413_U=0.7178746294207248.csv",
+    "infR": 0.0,
+    "supR": 1.0,
+    "r": 0.9,
+    "s": 0.9,
+    "eps": 0.0002526735155491733,
+    "T": 135.0,
+    "L": 0.7128211591097413,
+    "U": 0.7178746294207248,
+    "save_csv": false
+  }
+]

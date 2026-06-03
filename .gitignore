@@ -1,0 +1,58 @@
+google-trace-data/*
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+htmlcov/
+
+# Python packaging/build artifacts
+build/
+dist/
+*.egg-info/
+
+# Local Python environment
+venv/
+.venv/
+
+# Local caches
+.cache/
+.mplconfig/
+
+# Notebook/editor/OS junk
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+
+# Local dataset symlink used by the vendored FFB training scripts.
+datasets/
+
+# Trained ML models.
+ML_models/
+experimental_results/ML_models/
+experimental-results/ML_models/
+experimental-results/MLmodels/
+
+# Public MNIST data downloaded by torchvision.
+data/MNIST/
+
+# Fair Fairness Benchmark datasets. See ffb_datasets/readme.md.
+ffb_datasets/adult/raw/adult.data
+ffb_datasets/adult/raw/adult.names
+ffb_datasets/adult/raw/adult.test
+ffb_datasets/bank_marketing/raw/bank-additional-full.csv
+ffb_datasets/compas/raw/compas-scores-two-years.csv
+ffb_datasets/german/raw/german.data
+ffb_datasets/german/raw/german.doc
+ffb_datasets/german/raw/german_credit_data.csv
+ffb_datasets/german/raw/german_credit_risk.csv

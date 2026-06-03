@@ -1,0 +1,18 @@
+[
+    {
+        "data_source" : "ffb_traces/adult_race_hsic.csv",
+        "data_column_name" : "input",
+        "data_results" : "experimental-results/ffb_adult.csv",
+        "use_averages" : false,
+        "infR" : 0,
+        "supR" : 1,
+        "r" : 0.9,
+        "s" : 0.9,
+        "eps" : 0.05,
+        "T" : 80,
+        "L" : -0.2, 
+        "U" : 0.2, 
+        "save_csv" : false
+    }
+
+]
