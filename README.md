@@ -79,7 +79,7 @@ ignored by git:
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-python -m pip install numpy pandas matplotlib tqdm scikit-learn scipy statsmodels tabulate torch torchvision
+python -m pip install numpy pandas matplotlib tqdm scikit-learn scipy statsmodels tabulate torch torchvision seaborn
 ```
 
 ### 2. Obtain the result CSVs in `experimental-results/`
@@ -195,6 +195,83 @@ The generated image files used in Figures 1-4 are:
 | Figure 4 | `adult_decrease_interval_lenght.pdf`, `adult_decrease_interval_boxplot.pdf` |
 
 
+## Reproducing the Stochastic Monitoring Experiments in the Appendix
+
+The standalone script `reproduce_stochastic_monitoring.py` reproduces the synthetic Beta
+process experiments from Appendix F.3-F.4, including Figures 5-12 and the Monte
+Carlo table.
+
+The script uses only synthetic data, so no external datasets or trained models
+are required. The script is documented with function-level docstrings. It uses
+the same Python environment as the main artifact workflow;
+make sure `scipy`, `numpy`, `pandas`, `matplotlib`, and `seaborn` are installed.
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+python -m pip install numpy pandas matplotlib scipy seaborn
+```
+
+Run the full stochastic workflow with:
+
+```bash
+python reproduce_stochastic_monitoring.py
+```
+
+By default this writes all result data, plots, and tables to:
+
+```text
+experimental-results/stochastic-monitoring/
+```
+
+The paper table uses 1000 Monte Carlo repetitions. The displayed one-run
+simulation uses the appendix SIM Beta parameters `(a,b)`. The Monte Carlo
+table reproduces both paper blocks by default: first the high-variance
+`(a,b)` block and then the lower-variance `(10a,10b)` block. To run only the
+lower-variance block, add `--mc-only-low-variance`.
+
+To run a fast smoke test before the full reproduction, use:
+
+```bash
+python reproduce_stochastic_monitoring.py --quick
+```
+
+To regenerate only the deterministic/single-run plots and skip the Monte Carlo
+table, use:
+
+```bash
+python reproduce_stochastic_monitoring.py --skip-mc
+```
+
+To skip the Appendix F.4 width experiments for Figures 10-12, use:
+
+```bash
+python reproduce_stochastic_monitoring.py --skip-rq4
+```
+
+Other useful options are `--seed <N>`, `--sim-probe-stride <K>`,
+`--no-csv`, and `--n-mc <N>`.
+
+The main outputs are:
+
+| Paper item | Output file |
+| --- | --- |
+| Figure 5 | `figure_05_beta_process.pdf` |
+| Figure 6 | `figure_06_verdict_heatmap.pdf` |
+| Figure 7 | `figure_07_uncertainty_evolution.pdf` |
+| Figure 8 | `figure_08_width_decomposition.pdf` |
+| Figure 9 | `figure_09a_ci_at_first_verdict.pdf`, `figure_09b_ci_at_end.pdf` |
+| Figure 10 | `figure_10_convergence.pdf` |
+| Figure 11 | `figure_11_limit_discount.pdf` |
+| Figure 12 | `figure_12_uniform_time.pdf`, `figure_12_uniform_time_specific.pdf` |
+| Table 2 | `table_02_mc_metrics.tex`, `figure_table_02_mc_violation_rates.pdf`, plus CSV summaries |
+
+The script also writes reusable CSV data, including `stochastic_beta_process.csv`,
+`stochastic_monitor_grid.csv`, `stochastic_monitor_first_verdicts.csv`,
+`table_02_mc_metrics_raw.csv`, `table_02_mc_metrics_summary.csv`, and the data
+underlying Figures 10-12. Use `--output-dir <path>` to place the outputs
+elsewhere, and `--n-mc <N>` to change the number of Monte Carlo repetitions.
+
 ## Repository Structure
 
 `main.py`
@@ -240,3 +317,8 @@ monitor.
 
 `generate_stochastic_traces.py`
 : Generates synthetic stochastic traces. These are not needed for Figures 1-4.
+
+`reproduce_stochastic_monitoring.py`
+: Reproduces the stochastic discounted-sum monitoring experiments from the
+synthetic Beta process, including Figures 5-12, Table 2, and the corresponding
+CSV data in `experimental-results/stochastic-monitoring/`.
